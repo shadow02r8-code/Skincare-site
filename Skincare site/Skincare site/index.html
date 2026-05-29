@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glow Essence — Amazon商品画像制作 | 板屋峻一郎</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --offwhite:#FAF8F5;
+    --offwhite-2:#F3EFE9;
+    --gold:#C8A96E;
+    --gold-soft:#D8C19A;
+    --brown:#3A3530;
+    --brown-soft:#6B635B;
+    --line:rgba(58,53,48,.12);
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"Noto Sans JP",sans-serif;
+    background:var(--offwhite);
+    color:var(--brown);
+    font-weight:300;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .en{font-family:"Cormorant Garamond",serif;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+
+  /* ---- Top bar ---- */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;
+    background:rgba(250,248,245,0);
+    transition:background .4s ease,box-shadow .4s ease,padding .4s ease;
+  }
+  .topbar.scrolled{
+    background:rgba(250,248,245,.92);
+    backdrop-filter:blur(10px);
+    box-shadow:0 1px 0 var(--line);
+    padding:13px 32px;
+  }
+  .topbar .mark{
+    font-family:"Cormorant Garamond",serif;
+    font-size:20px;letter-spacing:.18em;font-weight:600;
+    text-transform:uppercase;
+  }
+  .topbar .mark span{color:var(--gold);}
+  .topbar nav{display:flex;gap:30px;}
+  .topbar nav a{
+    font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--brown-soft);text-decoration:none;transition:color .25s;
+    font-weight:400;
+  }
+  .topbar nav a:hover{color:var(--gold);}
+  @media(max-width:720px){.topbar nav{display:none;}}
+
+  /* ---- Hero / header ---- */
+  header.hero{
+    min-height:88vh;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;
+    padding:140px 28px 90px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";position:absolute;left:50%;bottom:46px;transform:translateX(-50%);
+    width:1px;height:54px;
+    background:linear-gradient(var(--gold),transparent);
+  }
+  .hero .eyebrow{
+    font-size:12px;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--gold);font-weight:500;margin-bottom:30px;
+  }
+  .hero h1{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:500;
+    font-size:clamp(42px,8vw,86px);
+    line-height:1.04;
+    letter-spacing:.01em;
+  }
+  .hero h1 .slash{color:var(--gold-soft);font-weight:400;}
+  .hero h1 .sub{display:block;font-size:.46em;letter-spacing:.06em;margin-top:6px;color:var(--brown-soft);font-weight:400;}
+  .hero .credit{
+    margin-top:34px;
+    font-size:13px;letter-spacing:.1em;color:var(--brown-soft);
+    display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;
+  }
+  .hero .credit b{font-weight:500;color:var(--brown);}
+  .hero .credit .dot{width:4px;height:4px;border-radius:50%;background:var(--gold);}
+
+  /* ---- Section heading ---- */
+  .sec-head{text-align:center;margin-bottom:58px;}
+  .sec-head .kicker{
+    font-size:11.5px;letter-spacing:.4em;text-transform:uppercase;
+    color:var(--gold);font-weight:500;margin-bottom:16px;
+  }
+  .sec-head h2{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:500;font-size:clamp(30px,4.6vw,46px);line-height:1.1;
+  }
+  .sec-head .jp{
+    margin-top:10px;font-size:14px;color:var(--brown-soft);letter-spacing:.06em;
+  }
+
+  /* ---- Gallery ---- */
+  section.gallery{padding:60px 0 30px;}
+  .grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:26px;
+  }
+  .card{
+    position:relative;overflow:hidden;
+    background:#fff;
+    border:1px solid var(--line);
+    cursor:pointer;
+  }
+  .card .imgbox{position:relative;overflow:hidden;aspect-ratio:1/1;}
+  .card img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .6s;
+  }
+  .card:hover img{transform:scale(1.05);}
+  /* numbered tag */
+  .card .num{
+    position:absolute;top:14px;left:14px;z-index:3;
+    font-family:"Cormorant Garamond",serif;
+    font-size:14px;letter-spacing:.1em;color:var(--brown);
+    background:rgba(250,248,245,.85);
+    backdrop-filter:blur(4px);
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);
+  }
+  /* hover overlay */
+  .card .overlay{
+    position:absolute;inset:0;z-index:2;
+    background:linear-gradient(to top,rgba(58,53,48,.92) 0%,rgba(58,53,48,.55) 45%,rgba(58,53,48,0) 100%);
+    color:var(--offwhite);
+    display:flex;flex-direction:column;justify-content:flex-end;
+    padding:30px 28px;
+    opacity:0;transition:opacity .45s ease;
+  }
+  .card:hover .overlay{opacity:1;}
+  .card .overlay .en-label{
+    font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold-soft);font-weight:500;margin-bottom:9px;
+    transform:translateY(10px);transition:transform .5s ease .05s;
+  }
+  .card .overlay h3{
+    font-size:19px;font-weight:500;margin-bottom:9px;letter-spacing:.02em;
+    transform:translateY(10px);transition:transform .5s ease .1s;
+  }
+  .card .overlay p{
+    font-size:13px;font-weight:300;color:rgba(250,248,245,.85);line-height:1.65;
+    transform:translateY(10px);transition:transform .5s ease .15s;
+  }
+  .card:hover .overlay .en-label,
+  .card:hover .overlay h3,
+  .card:hover .overlay p{transform:translateY(0);}
+
+  /* ---- Production info ---- */
+  section.info{
+    background:var(--brown);color:var(--offwhite);
+    margin-top:90px;padding:96px 0;
+  }
+  section.info .sec-head h2{color:var(--offwhite);}
+  section.info .sec-head .kicker{color:var(--gold-soft);}
+  .info-grid{
+    display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:start;
+  }
+  .tools{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(250,248,245,.12);border:1px solid rgba(250,248,245,.12);}
+  .tool{
+    background:var(--brown);
+    padding:30px 26px;
+  }
+  .tool .t-en{font-family:"Cormorant Garamond",serif;font-size:13px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-soft);}
+  .tool .t-name{font-size:18px;font-weight:400;margin-top:8px;}
+  .tool .t-desc{font-size:12.5px;color:rgba(250,248,245,.6);margin-top:6px;font-weight:300;}
+
+  .info-detail h3{
+    font-family:"Cormorant Garamond",serif;font-weight:500;font-size:26px;margin-bottom:6px;
+  }
+  .info-detail .meta{
+    display:flex;gap:40px;margin:24px 0 26px;padding-bottom:26px;border-bottom:1px solid rgba(250,248,245,.14);
+  }
+  .info-detail .meta .item .k{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:7px;}
+  .info-detail .meta .item .v{font-size:15px;font-weight:400;}
+  .info-detail .meta .item .v .big{font-family:"Cormorant Garamond",serif;font-size:30px;color:var(--gold);margin-right:4px;}
+  .info-detail p.lead{font-size:14px;color:rgba(250,248,245,.78);font-weight:300;line-height:1.85;}
+  .tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px;}
+  .tags span{
+    font-size:12px;letter-spacing:.04em;padding:7px 15px;
+    border:1px solid rgba(250,248,245,.22);border-radius:999px;color:rgba(250,248,245,.8);
+  }
+  @media(max-width:820px){
+    .info-grid{grid-template-columns:1fr;gap:46px;}
+  }
+
+  /* ---- Footer ---- */
+  footer{
+    text-align:center;padding:70px 28px 56px;background:var(--offwhite-2);
+  }
+  footer .port-link{
+    display:inline-flex;align-items:center;gap:12px;
+    font-family:"Cormorant Garamond",serif;font-size:23px;letter-spacing:.04em;
+    color:var(--brown);text-decoration:none;
+    padding-bottom:8px;border-bottom:1px solid var(--gold);
+    transition:gap .3s ease,color .3s;
+  }
+  footer .port-link:hover{gap:18px;color:var(--gold);}
+  footer .port-link .arrow{color:var(--gold);font-size:18px;}
+  footer .copy{margin-top:30px;font-size:12px;letter-spacing:.14em;color:var(--brown-soft);}
+
+  /* ---- Reveal animation ---- */
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media(max-width:900px){
+    .grid{grid-template-columns:repeat(2,1fr);gap:18px;}
+  }
+  @media(max-width:600px){
+    .grid{grid-template-columns:1fr;gap:18px;}
+    .wrap{padding:0 20px;}
+    .card .overlay{opacity:1;background:linear-gradient(to top,rgba(58,53,48,.9) 0%,rgba(58,53,48,.2) 60%,rgba(58,53,48,0) 100%);}
+    .card .overlay .en-label,.card .overlay h3,.card .overlay p{transform:none;}
+    .tools{grid-template-columns:1fr;}
+    header.hero{min-height:78vh;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <div class="mark">Glow<span>·</span>Essence</div>
+  <nav>
+    <a href="#gallery">Gallery</a>
+    <a href="#info">Production</a>
+    <a href="#footer">Contact</a>
+  </nav>
+</div>
+
+<header class="hero" data-screen-label="Hero">
+  <div class="eyebrow reveal">Amazon Product Photography</div>
+  <h1 class="reveal">Glow Essence <span class="slash">/</span> Brightening Serum
+    <span class="sub en">A 7-image listing set, crafted to convert.</span>
+  </h1>
+  <div class="credit reveal">
+    <span>Amazon商品画像制作</span><span class="dot"></span><b>板屋峻一郎</b>
+  </div>
+</header>
+
+<section class="gallery" id="gallery">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">The Listing Set</div>
+      <h2>Image Gallery</h2>
+      <div class="jp">Amazon 商品ページを構成する 7 枚のクリエイティブ</div>
+    </div>
+    <div class="grid" id="grid">
+      <!-- cards injected -->
+    </div>
+  </div>
+</section>
+
+<section class="info" id="info">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Behind the Work</div>
+      <h2>Production Notes</h2>
+    </div>
+    <div class="info-grid">
+      <div class="reveal">
+        <div class="tools">
+          <div class="tool">
+            <div class="t-en">AI Design</div>
+            <div class="t-name">Claude Design</div>
+            <div class="t-desc">構成・コピー設計・レイアウト</div>
+          </div>
+          <div class="tool">
+            <div class="t-en">Retouch</div>
+            <div class="t-name">Photoshop</div>
+            <div class="t-desc">商品レタッチ・合成・調色</div>
+          </div>
+          <div class="tool">
+            <div class="t-en">Layout</div>
+            <div class="t-name">Canva Pro</div>
+            <div class="t-desc">テキスト訴求・図版作成</div>
+          </div>
+          <div class="tool">
+            <div class="t-en">Automation</div>
+            <div class="t-name">Python</div>
+            <div class="t-desc">一括書き出し・サイズ最適化</div>
+          </div>
+        </div>
+      </div>
+      <div class="info-detail reveal">
+        <h3>About this project</h3>
+        <div class="meta">
+          <div class="item">
+            <div class="k">Duration</div>
+            <div class="v">2日間</div>
+          </div>
+          <div class="item">
+            <div class="k">Deliverables</div>
+            <div class="v"><span class="big en">7</span>枚 / 1:1</div>
+          </div>
+        </div>
+        <p class="lead">白背景のメイン画像から、ベネフィット・成分・使い方・テクスチャー・ブランドイメージ・信頼性まで、購入の意思決定を後押しする一連の流れを設計しました。Amazon の画像ガイドラインに準拠しつつ、高級感と視認性を両立させています。</p>
+        <p class="lead" style="margin-top:18px;">化粧品・美容・健康食品・日用品など、同様のサムネイル＆サブ画像制作に対応可能です。ブランドのトーンに合わせた構成からお任せください。</p>
+        <div class="tags">
+          <span>サムネイル設計</span>
+          <span>ベネフィット訴求</span>
+          <span>成分・図版</span>
+          <span>商品レタッチ</span>
+          <span>ガイドライン準拠</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="footer">
+  <a class="port-link" href="#" target="_self">板屋峻一郎 ポートフォリオ <span class="arrow">→</span></a>
+  <div class="copy">© 2025 板屋峻一郎 — Shunichiro Itaya</div>
+</footer>
+
+<script>
+  // Gallery data
+  const items = [
+    {n:'01', file:'01_main.png',        en:'Main Image',        jp:'メイン画像',         desc:'白背景・1:1のAmazonルール対応。商品の魅力をシンプルに伝えるファーストビュー。'},
+    {n:'02', file:'02_features.png',    en:'Features',          jp:'特徴・ベネフィット', desc:'無添加処方・全肌質対応・皮膚科監修。購入の決め手となる価値を整理して提示。'},
+    {n:'03', file:'03_ingredients.png', en:'Ingredients',       jp:'成分訴求',           desc:'Vitamin C / Niacinamide / Hyaluronic Acid。3つの有効成分を視覚的に。'},
+    {n:'04', file:'04_how_to_use.png',  en:'How to Use',        jp:'使い方',             desc:'洗顔後の3ステップを明快に図解。使用シーンをイメージさせる導線設計。'},
+    {n:'05', file:'05_texture.png',     en:'Texture',           jp:'テクスチャー',       desc:'とろみのある質感と使用感を、ダーク背景で印象的に演出。'},
+    {n:'06', file:'06_brand.png',       en:'Brand Image',       jp:'ブランドイメージ',   desc:'「一滴に、美肌の力を。」ブランドの世界観を語るキービジュアル。'},
+    {n:'07', file:'07_trust.png',       en:'Trust',             jp:'信頼性訴求',         desc:'無添加・パラベンフリー・アレルギーテスト済。安心感で背中を押す。'}
+  ];
+  const grid = document.getElementById('grid');
+  items.forEach((it,i)=>{
+    const a = document.createElement('div');
+    a.className = 'card reveal';
+    a.style.transitionDelay = (i%3)*0.08 + 's';
+    a.innerHTML = `
+      <span class="num en">${it.n}</span>
+      <div class="imgbox"><img src="img/${it.file}" alt="${it.jp}" loading="lazy"></div>
+      <div class="overlay">
+        <div class="en-label">${it.en}</div>
+        <h3>${it.jp}</h3>
+        <p>${it.desc}</p>
+      </div>`;
+    grid.appendChild(a);
+  });
+
+  // Scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Topbar scrolled state
+  const topbar = document.getElementById('topbar');
+  const onScroll = ()=>{ topbar.classList.toggle('scrolled', window.scrollY>40); };
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+</script>
+</body>
+</html>
